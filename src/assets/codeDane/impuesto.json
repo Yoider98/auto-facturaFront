@@ -1,0 +1,184 @@
+[
+    {
+      "id": 9124,
+      "name": "IVA 19%",
+      "type": "IVA",
+      "percentage": 19,
+      "active": true
+    },
+    {
+      "id": 9125,
+      "name": "IVA 5%",
+      "type": "IVA",
+      "percentage": 5,
+      "active": true
+    },
+    {
+      "id": 9126,
+      "name": "Retefuente 11%",
+      "type": "Retefuente",
+      "percentage": 11,
+      "active": true
+    },
+    {
+      "id": 9127,
+      "name": "Retefuente 10%",
+      "type": "Retefuente",
+      "percentage": 10,
+      "active": true
+    },
+    {
+      "id": 9128,
+      "name": "Retefuente 6%",
+      "type": "Retefuente",
+      "percentage": 6,
+      "active": true
+    },
+    {
+      "id": 9129,
+      "name": "Retefuente 4%",
+      "type": "Retefuente",
+      "percentage": 4,
+      "active": true
+    },
+    {
+      "id": 9130,
+      "name": "Retefuente 2.5%",
+      "type": "Retefuente",
+      "percentage": 2.5,
+      "active": true
+    },
+    {
+      "id": 9131,
+      "name": "ReteICA 11.04",
+      "type": "ReteICA",
+      "percentage": 11.04,
+      "active": true
+    },
+    {
+      "id": 9132,
+      "name": "ReteICA 13.8",
+      "type": "ReteICA",
+      "percentage": 13.8,
+      "active": true
+    },
+    {
+      "id": 9133,
+      "name": "ReteICA 9.66",
+      "type": "ReteICA",
+      "percentage": 9.66,
+      "active": true
+    },
+    {
+      "id": 9134,
+      "name": "ReteICA 8",
+      "type": "ReteICA",
+      "percentage": 8,
+      "active": true
+    },
+    {
+      "id": 9135,
+      "name": "ReteICA 7",
+      "type": "ReteICA",
+      "percentage": 7,
+      "active": true
+    },
+    {
+      "id": 9136,
+      "name": "ReteICA 6.9",
+      "type": "ReteICA",
+      "percentage": 6.9,
+      "active": true
+    },
+    {
+      "id": 9137,
+      "name": "ReteICA 4.14",
+      "type": "ReteICA",
+      "percentage": 4.14,
+      "active": true
+    },
+    {
+      "id": 9138,
+      "name": "ReteIVA 15%",
+      "type": "ReteIVA",
+      "percentage": 15,
+      "active": true
+    },
+    {
+      "id": 9139,
+      "name": "Impoconsumo 8%",
+      "type": "Impoconsumo",
+      "percentage": 8,
+      "active": true
+    },
+    {
+      "id": 9140,
+      "name": "Impoconsumo por valor",
+      "type": "Impoconsumo",
+      "percentage": 0,
+      "active": true
+    },
+    {
+      "id": 9141,
+      "name": "Retefuente 3.5%",
+      "type": "Retefuente",
+      "percentage": 3.5,
+      "active": true
+    },
+    {
+      "id": 9142,
+      "name": "Retefuente 7%",
+      "type": "Retefuente",
+      "percentage": 7,
+      "active": true
+    },
+    {
+      "id": 9143,
+      "name": "Retefuente 2%",
+      "type": "Retefuente",
+      "percentage": 2,
+      "active": true
+    },
+    {
+      "id": 9144,
+      "name": "Retefuente 1%",
+      "type": "Retefuente",
+      "percentage": 1,
+      "active": true
+    },
+    {
+      "id": 17720,
+      "name": "IVA 0%",
+      "type": "IVA",
+      "percentage": 0,
+      "active": true
+    },
+    {
+      "id": 20158,
+      "name": "Retefuente 3.5% arrendamiento",
+      "type": "Retefuente",
+      "percentage": 3.5,
+      "active": true
+    },
+    {
+      "id": 20165,
+      "name": "NO APLICA",
+      "type": "Retefuente",
+      "percentage": 4,
+      "active": true
+    },
+    {
+      "id": 20177,
+      "name": "Retefuente 4% arrendamiento",
+      "type": "Retefuente",
+      "percentage": 4,
+      "active": true
+    },
+    {
+      "id": 20179,
+      "name": "ReteICA 5",
+      "type": "ReteICA",
+      "percentage": 5,
+      "active": true
+    }
+  ]

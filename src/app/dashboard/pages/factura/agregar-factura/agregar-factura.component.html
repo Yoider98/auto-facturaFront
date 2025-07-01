@@ -1,0 +1,308 @@
+  <div class="container mt-4">
+    <h2 class="mb-4">Actualizar Factura</h2>
+    
+    <form [formGroup]="facturaForm" (ngSubmit)="onSubmit()" class="form-container">
+      <!-- Sección de Datos Generales -->
+      <mat-card class="mb-4">
+        <mat-card-header>
+          <mat-card-title>Datos Generales</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Número de Factura</mat-label>
+                <input matInput formControlName="numero" placeholder="Ej: F001-00000001">
+                <mat-error *ngIf="facturaForm.get('numero')?.hasError('required')">
+                  El número es requerido
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>UUID</mat-label>
+                <input matInput formControlName="uuid" placeholder="UUID de la factura">
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Tipo de Documento</mat-label>
+                <mat-select formControlName="tipoDocumento">
+                  <mat-option *ngFor="let tipo of tiposFactura" [value]="tipo.value">
+                    {{ tipo.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="facturaForm.get('tipoDocumento')?.hasError('required')">
+                  El tipo de documento es requerido
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Fecha de Emisión</mat-label>
+                <input matInput [matDatepicker]="picker1" formControlName="fechaEmision">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+                <mat-error *ngIf="facturaForm.get('fechaEmision')?.hasError('required')">
+                  La fecha de emisión es requerida
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Fecha de Vencimiento</mat-label>
+                <input matInput [matDatepicker]="picker2" formControlName="fechaVencimiento">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="col-md-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Divisa</mat-label>
+                <mat-select formControlName="divisa">
+                  <mat-option *ngFor="let divisa of divisas" [value]="divisa">
+                    {{ divisa }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Sección de Emisor y Receptor -->
+      <div class="row">
+        <div class="col-md-6">
+          <mat-card class="mb-4">
+            <mat-card-header>
+              <mat-card-title>Emisor</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div *ngIf="isLoading" class="loading-container">
+                <mat-spinner diameter="30"></mat-spinner>
+                <span>Cargando información del emisor...</span>
+              </div>
+              
+              <div *ngIf="!isLoading">
+                <mat-form-field *ngIf="!showAddProveedorModal" appearance="outline" class="w-100">
+                  <mat-label>Emisor</mat-label>
+                  <input matInput [value]="(proveedor?.commercial_name || proveedor?.name)" readonly>
+                </mat-form-field>
+                <mat-form-field *ngIf="!showAddProveedorModal" appearance="outline" class="w-100">
+                  <mat-label>Identificación</mat-label>
+                  <input matInput [value]="proveedor?.identification" readonly>
+                </mat-form-field>
+              </div>
+              <mat-dialog-actions *ngIf="showAddProveedorModal">
+                <span>Este proveedor no se encuentra registrado</span>
+                <button mat-button color="primary" (click)="openAddProveedorDialog($event)" type="button">Agregar Proveedor</button>
+              </mat-dialog-actions>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div class="col-md-6">
+          <mat-card class="mb-4">
+            <mat-card-header>
+              <mat-card-title>Receptor</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>ID Receptor</mat-label>
+                <mat-select formControlName="idReceptor">
+                  <mat-option *ngFor="let forma of centroCostos" [value]="forma.value">
+                    {{ forma.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <!-- Aquí podrías agregar más campos del receptor o un autocompletado -->
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+
+
+
+      <!-- Sección de Forma de Pago -->
+      <mat-card class="mb-4">
+        <mat-card-header>
+          <mat-card-title>Información de Pago</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row">
+            <div class="col-md-12">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Forma de Pago</mat-label>
+                <mat-select formControlName="formaPago">
+                  <mat-option *ngFor="let forma of metodoPago" [value]="forma.value">
+                    {{ forma.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+  <!-- Sección de Productos/Servicios -->
+  <mat-card class="mb-4">
+    <mat-card-header>
+      <mat-card-title>Productos / Servicios</mat-card-title>
+      <button mat-icon-button color="primary" (click)="addItemProducto()" type="button">
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </mat-card-header>
+    <mat-card-content>
+      <div formArrayName="itemsProductos">
+        <div *ngFor="let item of itemsProductos.controls; let i = index" [formGroupName]="i"
+            class="item-row p-3 mb-4 shadow-sm rounded border" style="background-color: #fafafa;">
+          
+          <!-- Línea de encabezado con descripción y eliminar -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <mat-form-field appearance="outline" class="flex-grow-1 me-3">
+              <mat-label>Descripción del producto/servicio</mat-label>
+              <input matInput formControlName="descripcion">
+            </mat-form-field>
+            <button mat-icon-button color="warn" (click)="removeItemProducto(i)"
+                    matTooltip="Eliminar item" type="button"
+                    [disabled]="itemsProductos.length <= 1">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+    
+          <!-- Fila de inputs: Cantidad - Precio - Subtotal - Impuesto - Total -->
+          <div class="row gy-3">
+            <!-- Tipo de Producto -->
+            <div class="col-md-3 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Tipo de Producto</mat-label>
+                <mat-select formControlName="tipoProducto">
+                  <mat-option *ngFor="let tipo of tiposProducto" [value]="tipo.value">
+                    {{ tipo.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- SOLO si es Activo Fijo -->
+            <div *ngIf="item.get('tipoProducto')?.value === 'FixedAsset'" class="col-md-6 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Activo Fijo</mat-label>
+                <input matInput [matAutocomplete]="autoAF" formControlName="activoFijo">
+                <mat-autocomplete #autoAF="matAutocomplete">
+                  <mat-option *ngFor="let af of getFilteredActivosFijosByIndex(i) | async" [value]="af.value">
+                    {{ af.label }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <!-- SOLO si es Cuenta Contable -->
+            <div *ngIf="item.get('tipoProducto')?.value === 'Account'" class="col-md-6 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Cuenta Contable</mat-label>
+                <input matInput [matAutocomplete]="auto" formControlName="cuentaContable">
+                <mat-autocomplete #auto="matAutocomplete">
+                  <mat-option *ngFor="let cuenta of getFilteredCuentasByIndex(i) | async" [value]="cuenta.value">
+                    {{ cuenta.value }} - {{ cuenta.label }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Cantidad</mat-label>
+                <input matInput type="number" formControlName="cantidad" (change)="calcularSubtotal(i)">
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-6 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Descuento</mat-label>
+                <input matInput type="number" formControlName="descuento" (change)="calcularSubtotal(i)" min="0" step="0.01" placeholder="0.00">
+                <span matPrefix>$&nbsp;</span>
+              </mat-form-field>
+            </div>
+      
+            <div class="col-md-3 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Precio Unit.</mat-label>
+                <input matInput type="number" [formControl]="item.get('precioUnit')?.get('valor')" (change)="calcularSubtotal(i)" min="0" step="0.01" placeholder="0.00">
+                <span matPrefix>$&nbsp;</span>
+              </mat-form-field>
+            </div>
+      
+            <div class="col-md-5 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Subtotal</mat-label>
+                <input matInput [value]="item.get('subtotal')?.value | currency" readonly>
+              </mat-form-field>
+            </div>
+      
+            <div class="col-md-5 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Impuesto</mat-label>
+                <input matInput [value]="formatearImpuesto(item.get('impuesto')?.value)" readonly>
+              </mat-form-field>
+            </div>
+      
+            <div class="col-md-5 col-sm-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Total</mat-label>
+                <input matInput [value]="item.get('total')?.value | number:'1.2-2'" readonly>
+              </mat-form-field>
+            </div>
+      
+          </div>
+    
+        </div>
+      </div>
+    </mat-card-content>  
+  </mat-card>
+
+
+      <!-- Sección de Totales -->
+      <mat-card class="mb-4">
+        <mat-card-content>
+          <div class="row justify-content-end">
+            <div class="col-md-4">
+              <div class="d-flex justify-content-between mb-2 text-danger">
+                <span>Descuentos:</span>
+                <span>{{ facturaForm.get('descuento')?.value | number:'1.2-2' }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Subtotal:</span>
+                <span>{{ facturaForm.get('subtotal')?.value | number:'1.2-2' }}</span>
+              </div>
+              
+              <div class="d-flex justify-content-between mb-2">
+                <span>Impuestos ({{ getPorcentajeImpuesto() }}%):</span>
+                <span>{{ facturaForm.get('impuestos')?.value | number:'1.2-2' }}</span>
+              </div>
+              
+              <div class="d-flex justify-content-between font-weight-bold">
+                <span>Total:</span>
+                <span>{{ facturaForm.get('total')?.value | number:'1.2-2' }}</span>
+              </div>
+              
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Botones de acción -->
+      <div class="d-flex justify-content-end gap-2 mb-4">
+        <button mat-button type="button" (click)="onCancel()" [disabled]="loading">
+          Cancelar
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          <span *ngIf="!loading">Guardar</span>
+          <mat-spinner *ngIf="loading" diameter="24"></mat-spinner>
+        </button>
+      </div>
+    </form>
+  </div>

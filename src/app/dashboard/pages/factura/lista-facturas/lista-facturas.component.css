@@ -1,0 +1,215 @@
+/* Table container */
+.container {
+  width: 100%;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.mat-elevation-z8 {
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 16px 0;
+  width: 100%;
+  display: block;
+}
+
+/* Table header */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-header-cell {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  background-color: #f5f5f5;
+  padding: 16px;
+  white-space: nowrap;
+}
+
+/* Table cells */
+.mat-cell {
+  padding: 16px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  word-break: break-word;
+}
+
+/* Row hover effect */
+.mat-row:hover {
+  background-color: #f9f9f9;
+}
+
+/* Action buttons */
+.mat-cell button {
+  margin: 0 4px;
+}
+
+/* Make action column take only needed space */
+.mat-column-acciones {
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 16px !important;
+}
+
+/* Paginator */
+.mat-paginator {
+  background-color: #f5f5f5;
+  border-top: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Search field */
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Add button */
+button[mat-raised-button] {
+  margin: 8px 0;
+}
+
+/* Loading spinner */
+mat-spinner {
+  margin: 32px auto;
+}
+
+/* No data message */
+.mat-cell:empty::before {
+  content: "-";
+  color: #999;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 8px;
+  }
+  
+  .mat-header-cell,
+  .mat-cell {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+  
+  .mat-header-cell {
+    font-size: 11px;
+  }
+  
+  /* Hide less important columns on mobile */
+  .mat-column-fechaEmision,
+  .mat-column-tipoDocumento {
+    display: none;
+  }
+  
+  /* Make action buttons larger for touch */
+  .mat-cell button {
+    margin: 2px;
+    padding: 8px;
+  }
+  
+  .mat-cell button mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Adjust paginator for mobile */
+  .mat-paginator {
+    font-size: 12px;
+  }
+  
+  .mat-paginator .mat-paginator-page-size {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0 4px;
+  }
+  
+  .mat-header-cell,
+  .mat-cell {
+    padding: 6px 2px;
+    font-size: 11px;
+  }
+  
+  /* Hide more columns on very small screens */
+  .mat-column-emisor,
+  .mat-column-receptor {
+    display: none;
+  }
+  
+  /* Stack action buttons vertically */
+  .acciones {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .mat-cell button {
+    width: 32px;
+    height: 32px;
+  }
+  
+  /* Adjust search field */
+  .mat-form-field {
+    margin-bottom: 12px;
+  }
+  
+  .mat-form-field .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Card view for very small screens */
+  .table-container {
+    overflow-x: visible;
+  }
+  
+  table {
+    display: block;
+  }
+  
+  .mat-header-row {
+    display: none;
+  }
+  
+  .mat-row {
+    display: block;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .mat-cell {
+    display: block;
+    padding: 4px 0;
+    border: none;
+    text-align: left;
+  }
+  
+  .mat-cell:before {
+    content: attr(data-label) ": ";
+    font-weight: bold;
+    color: #666;
+  }
+  
+  .mat-column-acciones .mat-cell {
+    text-align: center;
+    padding-top: 8px;
+  }
+  
+  .mat-column-acciones .mat-cell:before {
+    content: "";
+  }
+}

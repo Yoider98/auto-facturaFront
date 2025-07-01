@@ -1,0 +1,76 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Lista de Facturas</h2>
+    <button mat-raised-button color="primary" (click)="abrirDialogoAgregar()">
+      <mat-icon>upload</mat-icon> Subir Facturas
+    </button>
+  </div>
+
+  <mat-form-field appearance="outline" class="w-100 mb-3">
+    <mat-label>Buscar factura</mat-label>
+    <input matInput (keyup)="aplicarFiltro($event)" placeholder="Buscar..." #input>
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <div class="mat-elevation-z8">
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="w-100">
+      <!-- Número de Factura -->
+      <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Número</th>
+        <td mat-cell *matCellDef="let factura">{{factura.numero}}</td>
+      </ng-container>
+
+      <!-- Fecha Emisión -->
+      <ng-container matColumnDef="fechaEmision">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha Emisión</th>
+        <td mat-cell *matCellDef="let factura">{{factura.fecha | date:'dd/MM/yyyy'}}</td>
+      </ng-container>
+
+            <!-- Tipo Documento -->
+            <ng-container matColumnDef="emisor">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Emisor</th>
+              <td mat-cell *matCellDef="let factura">{{factura.emisor.nombre}}</td>
+            </ng-container>
+            <!-- Tipo Documento -->
+            <ng-container matColumnDef="receptor">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Receptor</th>
+              <td mat-cell *matCellDef="let factura">{{factura.receptor.nombre}}</td>
+            </ng-container>
+
+      <!-- Total -->
+      <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total</th>
+        <td mat-cell *matCellDef="let factura">{{factura.total | currency}}</td>
+      </ng-container>
+
+      <!-- Acciones -->
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef class="text-center">Acciones</th>
+        <td mat-cell *matCellDef="let factura" class="text-center acciones">
+          <button mat-icon-button color="primary" (click)="editarFactura(factura)" matTooltip="Editar">
+            <mat-icon>edit</mat-icon>
+          </button>
+         <!-- <button mat-icon-button color="warn" (click)="eliminarFactura(factura.numero)" matTooltip="Eliminar">
+            <mat-icon>delete</mat-icon>
+          </button> --> 
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Mensaje cuando no hay datos -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          No se encontraron facturas
+        </td>
+      </tr>
+    </table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Seleccionar página"></mat-paginator>
+  </div>
+</div>
+<div *ngIf="loading">
+  <mat-spinner diameter="50"></mat-spinner>
+</div>

@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Agregar Producto</h2>
+<mat-dialog-content [formGroup]="productoForm">
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Descripción</mat-label>
+    <input matInput formControlName="descripcion">
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Valor Unitario</mat-label>
+    <input matInput type="number" formControlName="valorUnitario">
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>nombre Iva</mat-label>
+    <input matInput formControlName="nombreIva">
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>IVA (%)</mat-label>
+    <input matInput type="number" formControlName="iva">
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="w-100">
+    <mat-label>Cantidad</mat-label>
+    <input matInput type="number" formControlName="cantidad">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancelar()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="guardar()" [disabled]="!productoForm.valid">Agregar</button>
+</mat-dialog-actions> 

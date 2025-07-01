@@ -1,0 +1,134 @@
+<div class="upload-container">
+  <div class="upload-header">
+    <h2>Subir Archivos ZIP</h2>
+    <p class="upload-description">
+      Arrastra y suelta archivos .zip o haz clic para seleccionar múltiples archivos
+    </p>
+  </div>
+
+  <!-- Zona de drag & drop -->
+  <div 
+    class="upload-zone" 
+    [class.drag-over]="isDragOver"
+    [class.uploading]="isUploading"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    (click)="fileInput.click()"
+  >
+    <div class="upload-content" *ngIf="!isUploading">
+      <mat-icon class="upload-icon">cloud_upload</mat-icon>
+      <h3>Arrastra archivos ZIP aquí</h3>
+      <p>o haz clic para seleccionar archivos</p>
+      <p class="file-types">Solo archivos .zip permitidos</p>
+    </div>
+
+    <!-- Progreso de carga -->
+    <div class="upload-progress" *ngIf="isUploading">
+      <mat-progress-spinner 
+        mode="determinate" 
+        [value]="uploadProgress"
+        diameter="60"
+        color="primary"
+      ></mat-progress-spinner>
+      <p class="progress-text">{{uploadProgress}}% completado</p>
+      <p class="uploading-text">Procesando archivos ZIP...</p>
+    </div>
+
+    <!-- Input file oculto -->
+    <input 
+      #fileInput
+      type="file" 
+      multiple 
+      accept=".zip"
+      (change)="onFileSelected($event)"
+      style="display: none;"
+    >
+  </div>
+
+  <!-- Lista de archivos seleccionados -->
+  <div class="selected-files" *ngIf="selectedFiles.length > 0">
+    <h3>Archivos seleccionados ({{selectedFiles.length}})</h3>
+    
+    <div class="file-list">
+      <div 
+        class="file-item" 
+        *ngFor="let file of selectedFiles; let i = index"
+        [class.uploaded]="file.uploaded"
+        [class.error]="file.error"
+      >
+        <div class="file-info">
+          <mat-icon class="file-icon">description</mat-icon>
+          <div class="file-details">
+            <span class="file-name">{{file.name}}</span>
+            <span class="file-size">{{formatFileSize(file.size)}}</span>
+            <span class="file-error" *ngIf="file.error && file.errorMessage">{{file.errorMessage}}</span>
+            <span class="file-success" *ngIf="file.uploaded && file.errorMessage && !file.error">{{file.errorMessage}}</span>
+          </div>
+        </div>
+        
+        <div class="file-status">
+          <mat-icon 
+            *ngIf="file.uploaded" 
+            class="status-icon success"
+          >check_circle</mat-icon>
+          <mat-icon 
+            *ngIf="file.error" 
+            class="status-icon error"
+          >error</mat-icon>
+          <mat-spinner 
+            *ngIf="file.uploading" 
+            diameter="20"
+            color="primary"
+          ></mat-spinner>
+          <button 
+            *ngIf="!file.uploading && !file.uploaded && !file.error"
+            mat-icon-button 
+            color="warn" 
+            (click)="removeFile(i)"
+            class="remove-btn"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="upload-actions" *ngIf="!isUploading">
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="uploadFiles()"
+        [disabled]="!canUpload()"
+        class="upload-btn"
+      >
+        <mat-icon>cloud_upload</mat-icon>
+        Procesar {{selectedFiles.length}} archivo(s) ZIP
+      </button>
+      
+      <button 
+        mat-stroked-button 
+        (click)="clearFiles()"
+        [disabled]="selectedFiles.length === 0"
+        class="clear-btn"
+      >
+        <mat-icon>clear_all</mat-icon>
+        Limpiar lista
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensajes de estado -->
+  <div class="status-messages">
+    <div class="message success" *ngIf="uploadSuccess">
+      <mat-icon>check_circle</mat-icon>
+      <span>{{uploadSuccess}}</span>
+    </div>
+    
+    <div class="message error" *ngIf="uploadError">
+      <mat-icon>error</mat-icon>
+      <span>{{uploadError}}</span>
+    </div>
+  </div>
+</div>

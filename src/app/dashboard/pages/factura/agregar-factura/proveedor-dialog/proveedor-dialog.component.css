@@ -1,0 +1,67 @@
+/* proveedor-dialog.component.css */
+.w-100 {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.w-50 {
+    width: 48%;
+    margin-bottom: 1rem;
+}
+
+.w-33 {
+    width: 31%;
+    margin-bottom: 1rem;
+}
+
+.w-25 {
+    width: 23%;
+    margin-bottom: 1rem;
+}
+
+.form-container {
+    padding: 1rem 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+mat-tab-group {
+    width: 100%;
+}
+
+mat-form-field {
+    margin-bottom: 1rem;
+}
+
+mat-dialog-content {
+    min-width: 500px;
+    max-width: 700px;
+}
+
+mat-dialog-actions {
+    padding: 1rem 0;
+}
+
+mat-checkbox {
+    margin: 1rem 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .w-50, .w-33, .w-25 {
+        width: 100%;
+    }
+    
+    mat-dialog-content {
+        min-width: 300px;
+        max-width: 100%;
+    }
+}

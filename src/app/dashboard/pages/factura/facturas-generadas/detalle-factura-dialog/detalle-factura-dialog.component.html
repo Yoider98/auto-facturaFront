@@ -1,0 +1,211 @@
+<div class="dialog-container">
+  <!-- Header con gradiente -->
+  <div class="dialog-header">
+    <div class="header-content">
+      <div class="header-left">
+        <mat-icon class="header-icon">receipt</mat-icon>
+        <div class="header-text">
+          <h2 mat-dialog-title>Detalle de Factura</h2>
+          <p class="header-subtitle">{{factura.numero}}</p>
+        </div>
+      </div>
+      <button mat-icon-button class="close-btn" (click)="onClose()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <mat-dialog-content class="dialog-content">
+    <!-- Información Principal -->
+    <div class="main-info-section">
+      <div class="info-card">
+        <div class="card-header">
+          <mat-icon>info</mat-icon>
+          <h3>Información General</h3>
+        </div>
+        <div class="card-content">
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Número</span>
+              <span class="info-value">{{factura.numero}}</span>
+            </div>
+            <div class="info-item" *ngIf="detalleAPI">
+              <span class="info-label">Nombre</span>
+              <span class="info-value">{{detalleAPI.name}}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Fecha</span>
+              <span class="info-value">{{factura.fecha | date:'dd/MM/yyyy'}}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Tipo</span>
+              <span class="info-value">{{factura.tipoDocumento}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información del Proveedor -->
+      <div class="info-card" *ngIf="detalleAPI">
+        <div class="card-header">
+          <mat-icon>business</mat-icon>
+          <h3>Proveedor</h3>
+        </div>
+        <div class="card-content">
+          <div class="supplier-info">
+            <div class="supplier-id">
+              <span class="info-label">Identificación</span>
+              <span class="info-value">{{detalleAPI.supplier.identification}}</span>
+            </div>
+            <div class="supplier-details">
+              <span class="info-label">Centro de Costos</span>
+              <span class="info-value">{{detalleAPI.cost_center}}</span>
+            </div>
+            <div class="supplier-details">
+              <span class="info-label">Factura Proveedor</span>
+              <span class="info-value">{{detalleAPI.provider_invoice.prefix}}-{{detalleAPI.provider_invoice.number}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Totales -->
+    <div class="totals-section">
+      <div class="totals-card">
+        <div class="card-header">
+          <mat-icon>calculate</mat-icon>
+          <h3>Resumen Financiero</h3>
+        </div>
+        <div class="card-content">
+          <div class="totals-grid">
+            <div class="total-item">
+              <span class="total-label">Subtotal</span>
+              <span class="total-value">{{detalleAPI ? subtotalCalculado : factura.subtotal | currency}}</span>
+            </div>
+            <div class="total-item">
+              <span class="total-label">Impuestos</span>
+              <span class="total-value taxes">{{totalImpuestos | currency}}</span>
+            </div>
+            <div class="total-item main-total">
+              <span class="total-label">Total</span>
+              <span class="total-value">{{detalleAPI ? detalleAPI.total : factura.total | currency}}</span>
+            </div>
+            <div class="total-item" *ngIf="detalleAPI && detalleAPI.balance !== 0">
+              <span class="total-label">Saldo</span>
+              <span class="total-value balance">{{detalleAPI.balance | currency}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items de la factura -->
+    <div class="items-section" *ngIf="detalleAPI && detalleAPI.items && detalleAPI.items.length > 0">
+      <div class="items-card">
+        <div class="card-header">
+          <mat-icon>inventory</mat-icon>
+          <h3>Items de la Factura</h3>
+          <span class="items-count">{{detalleAPI.items.length}} items</span>
+        </div>
+        <div class="card-content">
+          <div class="items-list">
+            <div class="item-card" *ngFor="let item of detalleAPI.items; let i = index">
+              <div class="item-header">
+                <div class="item-number">{{i + 1}}</div>
+                <div class="item-main-info">
+                  <h4 class="item-title">{{item.description}}</h4>
+                  <div class="item-meta">
+                    <span class="item-code">{{item.code}}</span>
+                    <span class="item-type">{{item.type}}</span>
+                  </div>
+                </div>
+                <div class="item-total">
+                  <span class="total-amount">{{item.total | currency}}</span>
+                </div>
+              </div>
+              
+              <div class="item-details">
+                <div class="item-specs">
+                  <div class="spec-item">
+                    <span class="spec-label">Cantidad</span>
+                    <span class="spec-value">{{item.quantity}}</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Precio Unit.</span>
+                    <span class="spec-value">{{item.price | currency}}</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Descuento</span>
+                    <span class="spec-value">{{item.discount | currency}}</span>
+                  </div>
+                </div>
+                
+                <!-- Impuestos del item -->
+                <div class="taxes-section" *ngIf="item.taxes && item.taxes.length > 0">
+                  <div class="taxes-header">
+                    <mat-icon class="tax-icon">receipt_long</mat-icon>
+                    <span>Impuestos</span>
+                  </div>
+                  <div class="taxes-list">
+                    <div class="tax-item" *ngFor="let tax of item.taxes">
+                      <span class="tax-name">{{tax.name}}</span>
+                      <span class="tax-percentage">({{tax.percentage}}%)</span>
+                      <span class="tax-value">{{tax.value | currency}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagos -->
+    <div class="payments-section" *ngIf="detalleAPI && detalleAPI.payments && detalleAPI.payments.length > 0">
+      <div class="payments-card">
+        <div class="card-header">
+          <mat-icon>payment</mat-icon>
+          <h3>Métodos de Pago</h3>
+        </div>
+        <div class="card-content">
+          <div class="payments-list">
+            <div class="payment-item" *ngFor="let payment of detalleAPI.payments">
+              <div class="payment-info">
+                <mat-icon class="payment-icon">account_balance_wallet</mat-icon>
+                <span class="payment-name">{{payment.name}}</span>
+              </div>
+              <span class="payment-value">{{payment.value | currency}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metadata -->
+    <div class="metadata-section" *ngIf="detalleAPI && detalleAPI.metadata">
+      <div class="metadata-card">
+        <div class="card-header">
+          <mat-icon>schedule</mat-icon>
+          <h3>Información del Sistema</h3>
+        </div>
+        <div class="card-content">
+          <div class="metadata-info">
+            <div class="metadata-item">
+              <span class="metadata-label">Creado</span>
+              <span class="metadata-value">{{detalleAPI.metadata.created | date:'dd/MM/yyyy HH:mm'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-raised-button color="primary" (click)="onClose()">
+      <mat-icon>check</mat-icon>
+      Cerrar
+    </button>
+  </mat-dialog-actions>
+</div> 

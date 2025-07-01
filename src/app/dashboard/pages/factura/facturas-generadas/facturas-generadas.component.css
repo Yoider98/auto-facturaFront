@@ -1,0 +1,110 @@
+.container {
+  margin-top: 20px;
+}
+.table-container {
+  overflow-x: auto;
+}
+.acciones {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    margin-top: 16px;
+    padding: 0 8px;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  /* Hide less important columns on mobile */
+  .mat-column-fechaEmision {
+    display: none;
+  }
+  
+  /* Make action buttons larger for touch */
+  .acciones button {
+    margin: 2px;
+    padding: 8px;
+  }
+  
+  .acciones button mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0 4px;
+  }
+  
+  /* Hide more columns on very small screens */
+  .mat-column-emisor,
+  .mat-column-receptor {
+    display: none;
+  }
+  
+  /* Stack action buttons vertically */
+  .acciones {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .acciones button {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Card view for very small screens */
+  .table-container {
+    overflow-x: visible;
+  }
+  
+  table {
+    display: block;
+  }
+  
+  .mat-header-row {
+    display: none;
+  }
+  
+  .mat-row {
+    display: block;
+    margin-bottom: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 12px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .mat-cell {
+    display: block;
+    padding: 4px 0;
+    border: none;
+    text-align: left;
+  }
+  
+  .mat-cell:before {
+    content: attr(data-label) ": ";
+    font-weight: bold;
+    color: #666;
+  }
+  
+  .mat-column-acciones .mat-cell {
+    text-align: center;
+    padding-top: 8px;
+  }
+  
+  .mat-column-acciones .mat-cell:before {
+    content: "";
+  }
+} 

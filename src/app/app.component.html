@@ -1,0 +1,40 @@
+<nav
+  class="navbar navbar-expand-lg navbar-dark bg-primary"
+  *ngIf="isReady && !isAuthRoute"
+>
+  <a class="navbar-brand" routerLink="/">DASHBOARD</a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarNav"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <ul class="navbar-nav text-right">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/dashboard" *ngIf="isAuthenticated()"
+          >Home</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/auth" *ngIf="!isAuthenticated()"
+          >Login</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          href="#"
+          (click)="logout()"
+          *ngIf="isAuthenticated()"
+          >Cerrar Sesión</a
+        >
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>

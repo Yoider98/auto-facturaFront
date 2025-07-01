@@ -1,0 +1,54 @@
+<div class="container-fluid">
+  <div class="row">
+    <!-- Mobile Menu Toggle Button -->
+    <div class="mobile-menu-toggle d-md-none">
+      <button class="btn btn-primary" (click)="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    
+    <!-- Sidebar -->
+    <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" [class.show]="sidebarVisible">
+      <div class="sidebar-sticky">
+        <h5 class="text-center mt-3">Menú</h5>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/dashboard/facturas"
+              routerLinkActive="active"
+              (click)="onNavLinkClick()"
+            >
+              <i class="fas fa-home"></i> Facturas pendientes
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/dashboard/facturas-generadas"
+              routerLinkActive="active"
+              (click)="onNavLinkClick()"
+            >
+              <i class="fas fa-home"></i> Facturas generadas
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/dashboard/subirArchivo"
+              routerLinkActive="active"
+              (click)="onNavLinkClick()"
+            >
+              <i class="fas fa-users"></i> Subir factura
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

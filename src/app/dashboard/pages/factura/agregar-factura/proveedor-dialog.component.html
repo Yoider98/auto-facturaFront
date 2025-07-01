@@ -1,0 +1,229 @@
+<h2 mat-dialog-title>Agregar Nuevo Proveedor</h2>
+
+<mat-dialog-content>
+  <!-- Pestañas para alternar entre formularios -->
+  <mat-tab-group (selectedTabChange)="switchForm($event.index === 0 ? 'natural' : 'juridico')" [selectedIndex]="selectedForm === 'natural' ? 0 : 1">
+    
+    <!-- Pestaña Persona Natural -->
+    <mat-tab label="Persona Natural">
+      <form [formGroup]="proveedorNaturalForm" class="form-container" (ngSubmit)="onSave()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Tipo de Documento</mat-label>
+            <mat-select formControlName="tipo_documento">
+              <mat-option *ngFor="let tipo of tiposDocumento" [value]="tipo.value">
+                {{ tipo.viewValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Número de Documento</mat-label>
+            <input matInput formControlName="numero_documento" [placeholder]="proveedorNaturalForm.get('tipo_documento')?.value === 'cc' ? '8-10 dígitos' : 'Número de documento'">
+            <mat-error *ngIf="proveedorNaturalForm.get('numero_documento')?.hasError('required')">Número de documento es requerido</mat-error>
+            <mat-error *ngIf="proveedorNaturalForm.get('numero_documento')?.hasError('pattern')">Formato inválido</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Nombres</mat-label>
+            <input matInput formControlName="nombres">
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Apellidos</mat-label>
+            <input matInput formControlName="apellidos">
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-checkbox formControlName="responsable_iva" class="w-50">
+            Responsable de IVA
+          </mat-checkbox>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Responsabilidad Fiscal</mat-label>
+          <input matInput formControlName="responsabilidad_fiscal" placeholder="Ej: R-99-PN, No aplica, Otros">
+          <mat-error>Este campo es requerido</mat-error>
+          <mat-hint>Ejemplo: "R-99-PN" de No aplica - Otros.</mat-hint>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Departamento</mat-label>
+            <mat-select formControlName="departamento">
+              <mat-option *ngFor="let dept of departamentos" [value]="dept.value">
+                {{ dept.viewValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Ciudad</mat-label>
+            <mat-select formControlName="ciudad" [disabled]="!proveedorNaturalForm.get('departamento')?.value">
+              <mat-option *ngFor="let ciudad of ciudades" [value]="ciudad.value">
+                {{ ciudad.viewValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="w-25">
+            <mat-label>Indicativo</mat-label>
+            <input matInput formControlName="indicativo_telefono" placeholder="57">
+            <mat-error *ngIf="proveedorNaturalForm.get('indicativo_telefono')?.hasError('required')">Indicativo es requerido</mat-error>
+            <mat-error *ngIf="proveedorNaturalForm.get('indicativo_telefono')?.hasError('min')">Indicativo debe ser mayor a 0</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="telefono" placeholder="7-10 dígitos">
+            <mat-error *ngIf="proveedorNaturalForm.get('telefono')?.hasError('required')">Teléfono es requerido</mat-error>
+            <mat-error *ngIf="proveedorNaturalForm.get('telefono')?.hasError('pattern')">Debe tener 7-10 dígitos</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-25">
+            <mat-label>Extensión</mat-label>
+            <input matInput formControlName="extension_telefono" placeholder="Opcional">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Dirección</mat-label>
+          <input matInput formControlName="direccion">
+          <mat-error>Este campo es requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Email (Opcional)</mat-label>
+          <input matInput formControlName="email" type="email">
+          <mat-error *ngIf="proveedorNaturalForm.get('email')?.hasError('email')">Email no válido</mat-error>
+        </mat-form-field>
+      </form>
+    </mat-tab>
+
+    <!-- Pestaña Persona Jurídica -->
+    <mat-tab label="Persona Jurídica">
+      <form [formGroup]="proveedorJuridicoForm" class="form-container" (ngSubmit)="onSave()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Tipo de Documento</mat-label>
+            <mat-select formControlName="tipo_documento">
+              <mat-option *ngFor="let tipo of tiposDocumento" [value]="tipo.value">
+                {{ tipo.viewValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Número de Documento</mat-label>
+            <input matInput formControlName="numero_documento" [placeholder]="proveedorJuridicoForm.get('tipo_documento')?.value === 'nit' ? '9-10 dígitos' : 'Número de documento'">
+            <mat-error *ngIf="proveedorJuridicoForm.get('numero_documento')?.hasError('required')">Número de documento es requerido</mat-error>
+            <mat-error *ngIf="proveedorJuridicoForm.get('numero_documento')?.hasError('pattern')">Formato inválido</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Razón Social</mat-label>
+          <input matInput formControlName="razon_social">
+          <mat-error>Este campo es requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Nombre Comercial</mat-label>
+          <input matInput formControlName="nombre_comercial">
+          <mat-error>Este campo es requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Sucursal (Opcional)</mat-label>
+          <input matInput formControlName="sucursal">
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-checkbox formControlName="responsable_iva" class="w-50">
+            Responsable de IVA
+          </mat-checkbox>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Responsabilidad Fiscal</mat-label>
+          <input matInput formControlName="responsabilidad_fiscal" placeholder="Ej: R-99-PN, No aplica, Otros">
+          <mat-error>Este campo es requerido</mat-error>
+          <mat-hint>Ejemplo: "R-99-PN" de No aplica - Otros.</mat-hint>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Departamento</mat-label>
+            <mat-select formControlName="departamento">
+              <mat-option *ngFor="let dept of departamentos" [value]="dept.value">
+                {{ dept.viewValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Ciudad</mat-label>
+            <mat-select formControlName="ciudad" [disabled]="!proveedorJuridicoForm.get('departamento')?.value">
+              <mat-option *ngFor="let ciudad of ciudades" [value]="ciudad.value">
+                {{ ciudad.viewValue }}
+              </mat-option>
+            </mat-select>
+            <mat-error>Este campo es requerido</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="w-25">
+            <mat-label>Indicativo</mat-label>
+            <input matInput formControlName="indicativo_telefono" placeholder="57">
+            <mat-error *ngIf="proveedorJuridicoForm.get('indicativo_telefono')?.hasError('required')">Indicativo es requerido</mat-error>
+            <mat-error *ngIf="proveedorJuridicoForm.get('indicativo_telefono')?.hasError('min')">Indicativo debe ser mayor a 0</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-50">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="telefono" placeholder="7-10 dígitos">
+            <mat-error *ngIf="proveedorJuridicoForm.get('telefono')?.hasError('required')">Teléfono es requerido</mat-error>
+            <mat-error *ngIf="proveedorJuridicoForm.get('telefono')?.hasError('pattern')">Debe tener 7-10 dígitos</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-25">
+            <mat-label>Extensión</mat-label>
+            <input matInput formControlName="extension_telefono" placeholder="Opcional">
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Dirección</mat-label>
+          <input matInput formControlName="direccion">
+          <mat-error>Este campo es requerido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Email (Opcional)</mat-label>
+          <input matInput formControlName="email" type="email">
+          <mat-error *ngIf="proveedorJuridicoForm.get('email')?.hasError('email')">Email no válido</mat-error>
+        </mat-form-field>
+      </form>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!currentForm.valid">
+    Guardar Proveedor
+  </button>
+</mat-dialog-actions> 
