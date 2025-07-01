@@ -1,10 +1,12 @@
-# .github/workflows/deploy.yml
 name: Deploy Angular App to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # o la rama que uses
+      - main  # o la rama que estés usando
+
+permissions:
+  contents: write
 
 jobs:
   build-and-deploy:
@@ -14,7 +16,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Use Node.js
+    - name: Use Node.js 14
       uses: actions/setup-node@v4
       with:
         node-version: 14
@@ -25,8 +27,12 @@ jobs:
     - name: Build Angular app
       run: npm run build -- --configuration production
 
+    - name: Clean temp deployment folder (optional)
+      run: |
+        rm -rf github-pages-deploy-action-temp-deployment-folder || true
+
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        branch: gh-pages # rama destino
-        folder: dist/dashboard-template      # carpeta generada por Angular
+        branch: gh-pages
+        folder: dist/dashboard-template  # <-- cámbialo si tu app no se llama igual que el workspace
