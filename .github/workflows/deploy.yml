@@ -1,0 +1,32 @@
+# .github/workflows/deploy.yml
+name: Deploy Angular App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # o la rama que uses
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 14
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Angular app
+      run: npm run build -- --configuration production
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages # rama destino
+        folder: dist/dashboard-template      # carpeta generada por Angular
