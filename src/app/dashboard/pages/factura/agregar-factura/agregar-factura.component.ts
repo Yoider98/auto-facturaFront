@@ -185,24 +185,24 @@ export class AgregarFacturaComponent implements OnInit {
 
   initItemProducto(item: ItemProducto | null = null): FormGroup {
     return this.fb.group({
-      tipoProducto: ['FixedAsset'],
-      cuentaContable: [""],
-      activoFijo: [""],
+      tipoProducto: [item.tipoProducto || 'Account'],
+      cuentaContable: [item.cuentaContable || ''],
+      activoFijo: [item.activoFijo || ''],
       descripcion: [item.descripcion || '', Validators.required],
-      cantidad: [parseFloat(item.cantidad) || 0, [Validators.required, Validators.min(0)]],
-      descuento: [parseFloat(item.descuento) || 0],
+      cantidad: [item.cantidad || 0, [Validators.required, Validators.min(0)]],
+      descuento: [item.descuento || 0],
       impuesto: this.fb.group({
         nombre: [item.impuesto.nombre || 'IVA'],
-        porcentaje: [parseFloat(item.impuesto.porcentaje) || 0],
-        base: [parseFloat(item.impuesto.base) || 0],
-        valor: [parseFloat(item.impuesto.valor) || 0]
+        porcentaje: [item.impuesto.porcentaje ? parseFloat(item.impuesto.porcentaje) : 0],
+        base: [item.impuesto.base ? parseFloat(item.impuesto.base) : 0],
+        valor: [item.impuesto.valor ? parseFloat(item.impuesto.valor) : 0]
       }),
       precioUnit: this.fb.group({
-        valor: [parseFloat(item.precioUnit.valor) || 0],
-        base: [parseFloat(item.precioUnit.base) || 0]
+        valor: [item.precioUnit.valor ? parseFloat(item.precioUnit.valor) : 0],
+        base: [item.precioUnit.base ? parseFloat(item.precioUnit.base) : 0]
       }),
-      subtotal: [parseFloat(item.subtotal) || 0],
-      total: [parseFloat(item.total) || 0]
+      subtotal: [item.subtotal ? parseFloat(item.subtotal) : 0],
+      total: [item.total ? parseFloat(item.total) : 0]
     });
   }
   
@@ -249,7 +249,7 @@ export class AgregarFacturaComponent implements OnInit {
           },
           subtotal: subtotal.toString(),
           total: total.toString(),
-          tipoProducto: 'FixedAsset',
+          tipoProducto: 'Account',
           cuentaContable: ''
         };
         this.itemsProductos.push(this.initItemProducto(item));
@@ -319,6 +319,7 @@ export class AgregarFacturaComponent implements OnInit {
     let subtotalAntesDescuentos = 0;
     let totalFinal = 0;
   
+    // Calcular totales
     this.itemsProductos.controls.forEach(item => {
       const cantidad = parseFloat(item.get('cantidad').value || 0);
       const precioUnit = parseFloat(item.get('precioUnit').get('valor').value || 0);
@@ -329,16 +330,57 @@ export class AgregarFacturaComponent implements OnInit {
 
       totalImpuestos += valorImpuesto;
       subtotalAntesDescuentos += (cantidad * precioUnit);
-      subtotalGlobal += (subtotal);
-      totalDescuentos += (descuento);
+      subtotalGlobal += subtotal;
+      totalDescuentos += descuento;
     });
     
-  
+    // Calcular el total final
+    totalFinal = subtotalGlobal + totalImpuestos;
+    
+    // Verificar si hay decimales en el total
+    const totalRedondeado = Math.round(totalFinal);
+    const diferencia = totalRedondeado - totalFinal;
+    
+    // Si hay diferencia y no hay un ajuste de peso existente, agregarlo
+    if (diferencia !== 0 && !this.itemsProductos.controls.some(item => 
+      item.get('descripcion').value === 'Ajuste de peso')) {
+      
+      const itemAjuste = {
+        descripcion: 'Ajuste de peso',
+        cantidad: 1,
+        descuento: 0,
+        impuesto: {
+          nombre: 'IVA',
+          porcentaje: '0',
+          base: diferencia,
+          valor: 0
+        },
+        precioUnit: {
+          valor: diferencia,
+          base: '1'
+        },
+        subtotal: diferencia,
+        total: diferencia,
+        tipoProducto: 'Account',
+        cuentaContable: '42958101'
+      };
+      
+      this.itemsProductos.push(this.initItemProducto(itemAjuste as any));
+      
+      // Actualizar el índice del autocompletado para la nueva línea
+      const newIndex = this.itemsProductos.length - 1;
+      const control = this.itemsProductos.at(newIndex).get('cuentaContable');
+      this.filteredCuentas[newIndex] = this.getFilteredCuentas(control);
+      
+      // Recalcular totales con el ajuste
+      return this.calcularTotal();
+    }
+    
     // Solo redondea para mostrar, no para operar
     this.facturaForm.get('subtotal').setValue(this.round2(subtotalGlobal));
     this.facturaForm.get('descuento').setValue(this.round2(totalDescuentos));
     this.facturaForm.get('impuestos').setValue(this.round2(totalImpuestos));
-    this.facturaForm.get('total').setValue(this.round2(subtotalGlobal + totalImpuestos));
+    this.facturaForm.get('total').setValue(this.round2(totalFinal));
   }
 
   // Método para obtener el subtotal antes de descuentos

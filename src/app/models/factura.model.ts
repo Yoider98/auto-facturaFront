@@ -4,7 +4,8 @@ export interface ItemProducto {
   descripcion: string;
   cantidad: string;
   descuento?: string;
-  impuesto: {
+  impuesto?: {
+    tipo?: string;
     nombre: string;
     porcentaje: string;
     base: string;
@@ -16,8 +17,9 @@ export interface ItemProducto {
   };
   subtotal: string;
   total: string;
-  tipoProducto: string;
-  cuentaContable?: string;  // Added cuentaContable as optional property
+  tipoProducto?: string;
+  cuentaContable?: string;
+  activoFijo?: string;
 }
 
 export interface Factura {
