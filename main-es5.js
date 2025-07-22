@@ -846,7 +846,7 @@ function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Can
   /*! no static exports found */
   /***/
   function _(module, exports, __webpack_require__) {
-    module.exports = __webpack_require__(/*! C:\Users\Pc\Desktop\autofactura-Front\src\main.ts */"./src/main.ts");
+    module.exports = __webpack_require__(/*! C:\Users\YOIDER\OneDrive\Documents\GitHub\auto-facturaFront\src\main.ts */"./src/main.ts");
 
     /***/
   })
