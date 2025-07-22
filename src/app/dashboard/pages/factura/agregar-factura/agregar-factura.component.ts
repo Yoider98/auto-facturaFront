@@ -434,9 +434,9 @@ export class AgregarFacturaComponent implements OnInit {
     // First load basic data that doesn't depend on proveedor
     this.facturaForm.patchValue({
       ...factura,
-      fechaEmision: factura.fecha ? new Date(factura.fecha) : null,
-      fechaVencimiento: factura.fechaVencimiento ? new Date(factura.fechaVencimiento) : null,
-      fechaRecepcion: factura.fechaRecepcion ? new Date(factura.fechaRecepcion) : null
+      fechaEmision: this.formatDateToInput(factura.fecha),
+      fechaVencimiento: this.formatDateToInput(factura.fechaVencimiento),
+      fechaRecepcion: this.formatDateToInput(factura.fechaRecepcion)
     });
     
     // Set idEmisor after proveedor is loaded (handled in loadProveedor)
@@ -445,12 +445,77 @@ export class AgregarFacturaComponent implements OnInit {
     if (factura.productos && factura.productos.length > 0) {
       const itemsArray = this.facturaForm.get('itemsProductos') as FormArray;
       itemsArray.clear();
+      let totalFactura = 0;
+      let subtotalFactura = 0;
+      let totalImpuestos = 0;
+      let totalDescuentos = 0;
       factura.productos.forEach(item => {
+        // Depuración: mostrar el producto original
+        //console.log('Producto original:', item);
+        // Aplicar la fórmula de cálculo por ítem
+        const cantidad = parseFloat(item.cantidad) || 0;
+        const valorUnitario = parseFloat(item.precioUnit && item.precioUnit.valor ? item.precioUnit.valor : 0) || 0;
+        const descuento = parseFloat(item.descuento) || 0;
+        const porcentajeIVA = parseFloat(item.impuesto && item.impuesto.porcentaje ? item.impuesto.porcentaje : 0) || 0;
+        // Valor base
+        const valorBase = this.round2(cantidad * valorUnitario - descuento);
+        // IVA
+        const valorIVA = this.round2((valorBase * porcentajeIVA) / 100);
+        // Total por ítem
+        const totalItem = this.round2(valorBase + valorIVA);
+        // Depuración: mostrar los cálculos
+       // console.log(`Cálculos para ${item.descripcion}: cantidad=${cantidad}, valorUnitario=${valorUnitario}, descuento=${descuento}, porcentajeIVA=${porcentajeIVA}, valorBase=${valorBase}, valorIVA=${valorIVA}, totalItem=${totalItem}`);
+        // Actualizar los valores en el item
+        item.subtotal = valorBase;
+        if (item.impuesto) {
+          item.impuesto.base = valorBase;
+          item.impuesto.valor = valorIVA;
+        }
+        item.total = totalItem;
+        subtotalFactura += valorBase;
+        totalImpuestos += valorIVA;
+        totalDescuentos += descuento;
+        totalFactura += totalItem;
         itemsArray.push(this.initItemProducto(item));
       });
-      
       // Inicializar los observables después de cargar los items
       this.initializeAutocompleteObservables();
+      // Verificar si hay decimales en el total
+      const totalRedondeado = Math.ceil(totalFactura); // Redondear SIEMPRE hacia arriba
+      const diferencia = this.round2(totalRedondeado - totalFactura);
+      // Si hay diferencia positiva y no hay un ajuste de peso existente, agregarlo
+      if (diferencia > 0 && !this.itemsProductos.controls.some(item => 
+        item.get('descripcion').value === 'Ajuste de peso')) {
+        const itemAjuste = {
+          descripcion: 'Ajuste de peso',
+          cantidad: 1,
+          descuento: 0,
+          impuesto: {
+            nombre: 'IVA',
+            porcentaje: '0',
+            base: diferencia,
+            valor: 0
+          },
+          precioUnit: {
+            valor: diferencia,
+            base: '1'
+          },
+          subtotal: diferencia,
+          total: diferencia,
+          tipoProducto: 'Account',
+          cuentaContable: '42958101'
+        };
+        this.itemsProductos.push(this.initItemProducto(itemAjuste as any));
+        // Actualizar el índice del autocompletado para la nueva línea
+        const newIndex = this.itemsProductos.length - 1;
+        const control = this.itemsProductos.at(newIndex).get('cuentaContable');
+        this.filteredCuentas[newIndex] = this.getFilteredCuentas(control);
+      }
+      // Actualizar los totales en el formulario
+      this.facturaForm.get('subtotal').setValue(this.round2(subtotalFactura));
+      this.facturaForm.get('descuento').setValue(this.round2(totalDescuentos));
+      this.facturaForm.get('impuestos').setValue(this.round2(totalImpuestos));
+      this.facturaForm.get('total').setValue(this.round2(totalFactura + (diferencia > 0 ? diferencia : 0)));
     }
   }
 
@@ -684,5 +749,16 @@ export class AgregarFacturaComponent implements OnInit {
       }
     }
     return this.filteredActivosFijos[index];
+  }
+
+  private formatDateToInput(dateString: string): Date | null {
+    if (!dateString) return null;
+    // Si ya está en formato yyyy-MM-dd, crea un Date local
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      const [year, month, day] = dateString.split('-').map(Number);
+      return new Date(year, month - 1, day); // Date local, sin desfase
+    }
+    // Si viene con hora, crea el Date normal
+    return new Date(dateString);
   }
 }
