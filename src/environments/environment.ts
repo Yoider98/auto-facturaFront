@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: "https://auto-factura.onrender.com/",
+  apiUrl: "https://auto-factura-ousw.onrender.com",
 };
